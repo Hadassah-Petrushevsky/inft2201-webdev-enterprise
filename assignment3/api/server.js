@@ -5,6 +5,7 @@ const errorHandler = require("./middleware/errorHandler");
 const authRoutes = require("./routes/auth");
 const mailRoutes = require("./routes/mail");
 const statusRoutes = require("./routes/status");
+const rateLimit = require("./middleware/rateLimit");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 // Attach request logger early so all requests get an ID and log entry.
 app.use(requestLogger);
+app.use(rateLimit);
 
 // Mount routes
 app.use("/status", statusRoutes);
