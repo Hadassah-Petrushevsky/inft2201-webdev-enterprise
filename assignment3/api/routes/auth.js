@@ -13,7 +13,7 @@ router.post("/login", (req, res, next) => {
 
   // Validate input
   if (!username || !password){
-    const err = new Error("Username and password required");
+    const err = new Error("Missing credentials");
     err.statusCode = 400;
     return next(err);
   }
