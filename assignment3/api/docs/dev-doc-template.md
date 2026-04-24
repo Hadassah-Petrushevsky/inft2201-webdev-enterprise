@@ -2,9 +2,7 @@
 
 ## 1. Overview
 
-Briefly describe what this API does and the main use case.
-
-- Example: “This API provides authenticated access to mail messages for a corporate mail system, with role-based access control, logging, rate limiting, and centralized error handling.”
+This API provides authenticated access to mail messages with JWT authentication, role-based access control (admin/user), request logging, rate limiting, and centralized error handling.
 
 ---
 
@@ -34,18 +32,15 @@ Briefly describe what this API does and the main use case.
 - Required header for authenticated requests:
   - `Authorization: Bearer <token>`
 
-Mention any expiry behavior (e.g., tokens are valid for 1 hour).
-
+token expires after 1h
 ---
 
 ## 3. Roles & Access Rules
 
 Describe each role and what it can do.
 
-Example:
-
 - `admin`
-  - Can view any mail message.
+  - Can view all mail.
 - `user`
   - Can only view their own mail messages.
 
@@ -157,23 +152,22 @@ Simple health check to confirm the API is running.
 
 Describe how rate limiting works in your implementation.
 
-* Keyed by: (IP address) or (userId from token).
-* Limit: e.g. `RATE_LIMIT_MAX` requests per `RATE_LIMIT_WINDOW_SECONDS`.
-* What happens when the limit is exceeded:
+The API uses rate limiting to prevent excessive requests. Requests are tracked per IP address or userId (if authenticated). Each client is allowed a maximum number of requests defined by the environment variable RATE_LIMIT_MAX within a time window defined by RATE_LIMIT_WINDOW_SECONDS.
 
-  * Example response:
+If the limit is exceeded, the API responds with a 429 TooManyRequests error. A Retry-After header is included indicating how many seconds to wait before retrying.
 
-    ```json
-    {
-      "error": "TooManyRequests",
-      "message": "Rate limit exceeded. Please try again later.",
-      "statusCode": 429,
-      "requestId": "req-67890",
-      "timestamp": "2025-11-30T14:30:00Z"
-    }
-    ```
+Example response:
 
-You can also mention if you set a `Retry-After` header or include a field in the JSON.
+``` json
+{
+  "error": "TooManyRequests",
+  "message": "Rate limit exceeded. Please try again later.",
+  "statusCode": 429,
+  "requestId": "req-67890",
+  "timestamp": "2025-11-30T14:30:00Z"
+}
+```
+
 
 ---
 
