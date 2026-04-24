@@ -2,15 +2,28 @@ const jwt = require("jsonwebtoken");
 
 const SECRET = process.env.JWT_SECRET || "CHANGE_ME_BEFORE_SUBMISSION";
 
-// TODO: Implement authenticateJWT middleware for Assignment 3.
-// Requirements:
-// - Read the Authorization header: "Bearer <token>".
-// - Verify the token using jwt.verify and SECRET.
-// - If valid, attach the decoded payload to req.user.
-// - If missing/invalid/expired, pass an appropriate error into next(err)
-//   (do NOT send the response directly here — let errorHandler.js do that).
 
 module.exports = function authenticateJWT(req, res, next) {
-  // TODO: implement
-  next(new Error("authenticateJWT not implemented yet"));
+    const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    const err = new Error("Missing or invalid token");
+    err.statusCode = 401;
+    return next(err);
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET);
+
+    // Attach user to request (VERY IMPORTANT)
+    req.user = decoded;
+
+    next();
+  } catch (err) {
+    const error = new Error("Invalid or expired token");
+    error.statusCode = 401;
+    return next(error);
+  }
 };
