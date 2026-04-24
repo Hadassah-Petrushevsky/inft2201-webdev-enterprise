@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const SECRET = process.env.JWT_SECRET || "CHANGE_ME_BEFORE_SUBMISSION";
+const SECRET = process.env.JWT_SECRET || "MY_SECRET";
 
 
 module.exports = function authenticateJWT(req, res, next) {
