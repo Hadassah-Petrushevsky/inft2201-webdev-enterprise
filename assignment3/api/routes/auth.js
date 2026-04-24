@@ -9,11 +9,26 @@ const SECRET = process.env.JWT_SECRET || "CHANGE_ME_BEFORE_SUBMISSION";
 // Body: { username, password }
 // On success: return a JWT that includes { userId, role } as claims.
 router.post("/login", (req, res, next) => {
-  // TODO: implement:
-  // - Look up user in users.js
-  // - Check password (plain text is fine for this assignment)
-  // - If invalid, pass an appropriate auth error into next(err)
-  // - If valid, sign a JWT and return { token }
+
+  // Validate input
+  if (!username || !password){
+    const err = new Error("Username and password required");
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  // Find User
+  const user = users.find(
+    u => u.username === username && u.password === password
+  );
+
+  // Invalid Credentials
+  if (!user) {
+    const err = new Error("Invalid credentials");
+    err.statusCode = 401;
+    return next(err);
+  }
+
   next(new Error("Login endpoint not implemented yet"));
 });
 
