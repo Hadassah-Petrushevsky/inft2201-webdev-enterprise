@@ -9,6 +9,7 @@ const SECRET = process.env.JWT_SECRET || "CHANGE_ME_BEFORE_SUBMISSION";
 // Body: { username, password }
 // On success: return a JWT that includes { userId, role } as claims.
 router.post("/login", (req, res, next) => {
+  const { username, password } = req.body;
 
   // Validate input
   if (!username || !password){
@@ -29,7 +30,19 @@ router.post("/login", (req, res, next) => {
     return next(err);
   }
 
-  next(new Error("Login endpoint not implemented yet"));
+  // Create JWT payload
+  const payload = {
+    userId: user.id,
+    role: user.role
+  };
+
+  // Sign token
+  const token = jwt.sign(payload, SECRET, {
+    expiresIn: "1h"
+  });
+
+  // Return Token
+  res.json({ token });
 });
 
 module.exports = router;
